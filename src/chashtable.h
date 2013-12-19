@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include "cvector.h"
 
-#define DEFAULT_BUCKETS 15
+/* We are using a power of two, since apparently hashes work
+ * better in that scenario */
+#define DEFAULT_BUCKETS 64
 
 typedef uint32_t (*hashtable_hash)(char * key, size_t len);
 

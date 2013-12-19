@@ -44,6 +44,7 @@ int main(void) {
   cv_remove(v, 5);
   cv_remove(v, 5);
   cv_remove(v, 5);
+  cv_remove(v, 5);
   
   printf("After removing items (size of %d):\n", v->size);
   for ( i = 0; i < v->count; i++) {
@@ -56,7 +57,8 @@ int main(void) {
   
   printf("\nTesting HashTable\n");
   
-  hashtable * ht = ch_create(50);
+  // Let's use the default bucket size
+  hashtable * ht = ch_create(0);
   
   ch_set(ht, "John", "Mar");
   ch_set(ht, "Jahn", "Say What?");
