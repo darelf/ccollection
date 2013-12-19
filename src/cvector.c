@@ -11,6 +11,7 @@ cvector * cv_create() {
 }
 
 void cv_add(cvector * v, void * d) {
+  if (!d) return;
   if (v->size == 0) {
     //Allocate a beginning size... that define is in cvector.h 
     v->size = CV_DEFAULT_SIZE;
