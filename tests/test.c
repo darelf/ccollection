@@ -25,15 +25,19 @@ int main(void) {
   cv_add(v, "nine");
   cv_add(v, "ten");
   
-  printf("Before removing items:\n");
+  printf("Before removing items (size of %d):\n", v->size);
   int i;
   for ( i = 0; i < v->count; i++) {
     printf("%s\n", cv_get(v, i));
   }
   cv_remove(v, 2);
   cv_remove(v, 5);
+  cv_remove(v, 5);
+  cv_remove(v, 5);
+  cv_remove(v, 5);
+  cv_remove(v, 5);
   
-  printf("After removing items:\n");
+  printf("After removing items (size of %d):\n", v->size);
   for ( i = 0; i < v->count; i++) {
     printf("%s\n", cv_get(v, i));
   }

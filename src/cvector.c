@@ -20,6 +20,9 @@ void cv_add(cvector * v, void * d) {
   if (v->size == v->count) {
     //You already used the last slot... What do we do now!?!
     v->size = v->size * 2; //Maybe "double the size" a little simplistic?
+    // Note that realloc doesn't initialize the new memory, however,
+    // since we only read up to count items, and items are always compacted
+    // we don't have to worry about those memory locations.
     v->data = realloc(v->data, sizeof(void *) * v->size);
   }
   //Now actually put the data in
@@ -50,11 +53,12 @@ void cv_remove(cvector * v, size_t idx) {
     //invalid index...
     return;
   }
-  v->data[idx] = NULL;
+  // v->data[idx] = NULL; // I think this is unnecessary
+  
   /* We're going to go through the vector and remove this entry.
    * Since we can only remove one item at a time, we can edit the array
    * in place, starting at the deleted item and shifting everything down
-   * Obviously this take more time the earlier in the array the index is.
+   * Obviously this takes more time the earlier in the array the index is.
    */
   int i;
   for ( i = idx; i < v->count - 1; i++) {
@@ -64,7 +68,11 @@ void cv_remove(cvector * v, size_t idx) {
   v->count--;
   /* Maybe add something to reduce the memory allocation if the
    * size of the vector has fallen past a threshold?
-   */ 
+   */
+  if (v->count < (v->size / 2)) {
+    v->size = (v->size / 2);
+    v->data = realloc(v->data, sizeof(void *) * v->size);
+  }
 }
 
 void cv_free(cvector * v) {
