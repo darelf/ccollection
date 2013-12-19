@@ -19,7 +19,6 @@ depcomp
 install-sh
 missing
 stamp-h1
-tests/
 *~
 *.a
 *.o
