@@ -9,26 +9,29 @@
  * better in that scenario */
 #define DEFAULT_BUCKETS 64
 
-typedef uint32_t (*hashtable_hash)(char * key, size_t len);
+typedef uint32_t (*hashtable_hash)(void * key, size_t len);
+typedef int (*hashtable_compare)(void * a, void *b);
 
 typedef struct hashtable {
   cvector * buckets;
   size_t size;
   hashtable_hash hash;
+  hashtable_compare compare;
 } hashtable;
 
 typedef struct hashnode {
-  char * key;
+  void * key;
   void * data;
   uint32_t hash;
 } hashnode;
 
 hashtable * ch_create();
+hashtable * ch_create_full(size_t, hashtable_compare);
 void ch_free(hashtable *);
 
-void ch_set(hashtable *, char *, void *);
-void * ch_get(hashtable *, char *);
-void * ch_remove(hashtable *, char *);
+void ch_set(hashtable *, void *, void *);
+void * ch_get(hashtable *, void *);
+void * ch_remove(hashtable *, void *);
 void * ch_keys(hashtable *);
 
 #endif

@@ -3,8 +3,9 @@
 
 /* from wikipedia entry on jenkins hash
  */
-static uint32_t jenkins_hash(char * key, size_t len) {
+static uint32_t jenkins_hash(void * k, size_t len) {
   uint32_t hash, i;
+  char * key = (char *)k;
   for (hash = i = 0; i < len; ++i) {
     hash += key[i];
     hash += (hash << 10);
@@ -16,13 +17,24 @@ static uint32_t jenkins_hash(char * key, size_t len) {
   return hash;
 }
 
-hashtable * ch_create(size_t num_buckets) {
-  if (num_buckets < 1) num_buckets = DEFAULT_BUCKETS;
+/* Use a compare function, so it can be replaced by the user
+ * The default is the strcmp() function
+ */
+static int default_compare(void * a, void * b) {
+  return strcmp((char *)a, (char *)b);
+}
+
+hashtable * ch_create() {
+  return ch_create_full(DEFAULT_BUCKETS, default_compare);
+}
+
+hashtable * ch_create_full(size_t num_buckets, hashtable_compare comp) {
   hashtable * h = calloc(1, sizeof(hashtable));
   
   h->buckets = cv_create(num_buckets);
   h->size = num_buckets;
   h->hash = jenkins_hash;
+  h->compare = comp;
   
   return h;
 }
@@ -46,7 +58,7 @@ void ch_free(hashtable * h) {
   }
 }
 
-static inline hashnode * ch_node_create(int hash, char * key, void * data) {
+static inline hashnode * ch_node_create(int hash, void * key, void * data) {
   hashnode * node = calloc(1, sizeof(hashnode));
   
   node->key = key;
@@ -56,7 +68,7 @@ static inline hashnode * ch_node_create(int hash, char * key, void * data) {
   return node;
 }
 
-static inline cvector * ch_find_bucket(hashtable * h, char * key, int create, uint32_t * hash_out) {
+static inline cvector * ch_find_bucket(hashtable * h, void * key, int create, uint32_t * hash_out) {
   uint32_t hash = h->hash(key, strlen(key));
   int bucket_num = hash % h->size;
   *hash_out = hash;
@@ -71,25 +83,25 @@ static inline cvector * ch_find_bucket(hashtable * h, char * key, int create, ui
   return bucket;
 }
 
-void ch_set(hashtable * h, char * key, void * value) {
+void ch_set(hashtable * h, void * key, void * value) {
   uint32_t hash = 0;
   cvector * bucket = ch_find_bucket(h, key, 1, &hash);
   hashnode * node = ch_node_create(hash, key, value);
   cv_add(bucket, node);
 }
 
-static inline int ch_get_node(hashtable * h, uint32_t hash, cvector * bucket, char * key) {
+static inline int ch_get_node(hashtable * h, uint32_t hash, cvector * bucket, void * key) {
   int i = 0;
   for (i = 0; i < bucket->count; i++) {
     hashnode * node = cv_get(bucket, i);
-    if (node->hash == hash && strcmp(node->key, key) == 0) {
+    if (node->hash == hash && h->compare(node->key, key) == 0) {
       return i;
     }
   }
   return -1;
 }
 
-void * ch_get(hashtable * h, char * key) {
+void * ch_get(hashtable * h, void * key) {
   uint32_t hash = 0;
   cvector * bucket = ch_find_bucket(h, key, 0, &hash);
   if (!bucket) return NULL;
@@ -102,7 +114,7 @@ void * ch_get(hashtable * h, char * key) {
   return node->data;
 }
 
-void * ch_remove(hashtable * h, char * key) {
+void * ch_remove(hashtable * h, void * key) {
   uint32_t hash = 0;
   cvector * bucket = ch_find_bucket(h, key, 0, &hash);
   if (!bucket) return NULL;

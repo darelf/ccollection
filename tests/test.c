@@ -61,7 +61,7 @@ int main(void) {
   printf("\nTesting HashTable\n");
   
   // Let's use the default bucket size
-  hashtable * ht = ch_create(0);
+  hashtable * ht = ch_create();
   assert( ht->size == 64 );
   
   ch_set(ht, "John", "Mar");
