@@ -20,7 +20,7 @@ hashtable * ch_create(size_t num_buckets) {
   if (num_buckets < 1) num_buckets = DEFAULT_BUCKETS;
   hashtable * h = calloc(1, sizeof(hashtable));
   
-  h->buckets = calloc(num_buckets, sizeof(void *) * num_buckets);
+  h->buckets = cv_create(num_buckets);
   h->size = num_buckets;
   h->hash = jenkins_hash;
   
@@ -32,7 +32,7 @@ void ch_free(hashtable * h) {
   if (h) {
     if (h->buckets) {
       for (i = 0; i < h->size; i++) {
-        cvector * bucket = h->buckets[i];
+        cvector * bucket = cv_get(h->buckets, i);
         if (bucket) {
           for (j = 0; j < bucket->count; j++) {
             free(cv_get(bucket, j));
@@ -40,7 +40,7 @@ void ch_free(hashtable * h) {
           cv_free(bucket);
         }
       }
-      free(h->buckets);
+      cv_free(h->buckets);
     }
     free(h);
   }
@@ -61,11 +61,11 @@ static inline cvector * ch_find_bucket(hashtable * h, char * key, int create, ui
   int bucket_num = hash % h->size;
   *hash_out = hash;
   
-  cvector * bucket = h->buckets[bucket_num];
+  cvector * bucket = cv_get(h->buckets, bucket_num);
   
   if (!bucket && create) {
-    bucket = cv_create();
-    h->buckets[bucket_num] = bucket;
+    bucket = cv_create_default();
+    cv_insert(h->buckets,bucket_num,bucket);
   }
   
   return bucket;
@@ -114,3 +114,8 @@ void * ch_remove(hashtable * h, char * key) {
   free(node);
   return data;
 }
+
+//void * ch_keys(hashtable *h) {
+//  int i;
+//  for (i = 0; i < )
+//}

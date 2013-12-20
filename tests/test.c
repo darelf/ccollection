@@ -1,9 +1,10 @@
 #include <stdio.h>
+#include <assert.h>
 #include "cvector.h"
 #include "chashtable.h"
 
 int main(void) {
-  cvector * v = cv_create();
+  cvector * v = cv_create_default();
   cv_add(v, "one");
   cv_add(v, "two");
   cv_add(v, "three");
@@ -33,6 +34,7 @@ int main(void) {
   strncpy(buf, "TEST", 4);
   cv_add(v, buf);
   
+  assert( v->size == 30 );
   printf("Before removing items (size of %d):\n", v->size);
   int i;
   for ( i = 0; i < v->count; i++) {
@@ -46,6 +48,7 @@ int main(void) {
   cv_remove(v, 5);
   cv_remove(v, 5);
   
+  assert( v->size == 15 );
   printf("After removing items (size of %d):\n", v->size);
   for ( i = 0; i < v->count; i++) {
     printf("%s\n", (char *)cv_get(v, i));
@@ -59,10 +62,15 @@ int main(void) {
   
   // Let's use the default bucket size
   hashtable * ht = ch_create(0);
+  assert( ht->size == 64 );
   
   ch_set(ht, "John", "Mar");
   ch_set(ht, "Jahn", "Say What?");
   ch_set(ht, "Another", "Yet another entry");
+  
+  assert( strcmp(ch_get(ht, "John"), "Mar") == 0 );
+  assert( strcmp(ch_get(ht, "Another"), "Yet another entry") == 0 );
+  
   printf("Showing value for key 'John': %s\n", (char *)ch_get(ht, "John"));
   printf("Showing value for key 'Jahn': %s\n", (char *)ch_get(ht, "Jahn"));
   

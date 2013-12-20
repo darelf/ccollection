@@ -11,7 +11,8 @@ typedef struct cvector_ {
   size_t count;
 } cvector;
 
-cvector * cv_create();
+cvector * cv_create_default();
+cvector * cv_create(size_t);
 void cv_add(cvector *, void *);
 void cv_insert(cvector *, size_t, void *);
 void * cv_get(cvector *, size_t);

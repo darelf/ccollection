@@ -12,7 +12,7 @@
 typedef uint32_t (*hashtable_hash)(char * key, size_t len);
 
 typedef struct hashtable {
-  void ** buckets;
+  cvector * buckets;
   size_t size;
   hashtable_hash hash;
 } hashtable;
@@ -29,5 +29,6 @@ void ch_free(hashtable *);
 void ch_set(hashtable *, char *, void *);
 void * ch_get(hashtable *, char *);
 void * ch_remove(hashtable *, char *);
+void * ch_keys(hashtable *);
 
 #endif

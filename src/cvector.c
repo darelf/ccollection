@@ -2,22 +2,20 @@
 
 #include "cvector.h"
 
-cvector * cv_create() {
+cvector * cv_create(size_t num) {
   cvector * v = calloc(1, sizeof(cvector));
-  v->data = NULL;
-  v->size = 0;
+  v->size = num;
   v->count = 0;
+  v->data = calloc(v->size, sizeof(void *) * v->size);;
   return v;
+}
+
+cvector * cv_create_default() {
+  return cv_create(CV_DEFAULT_SIZE);
 }
 
 void cv_add(cvector * v, void * d) {
   if (!d) return;
-  if (v->size == 0) {
-    //Allocate a beginning size... that define is in cvector.h 
-    v->size = CV_DEFAULT_SIZE;
-    v->data = malloc(sizeof(void *) * v->size);
-    memset(v->data, '\0', sizeof(void *) * v->size);
-  }
   if (v->size == v->count) {
     //You already used the last slot... What do we do now!?!
     v->size = v->size * 2; //Maybe "double the size" a little simplistic?
@@ -31,10 +29,10 @@ void cv_add(cvector * v, void * d) {
   v->count++;
 }
 
-/* This is overwrite any data in position idx.
+/* This will overwrite any data in position idx.
  */
 void cv_insert(cvector * v, size_t idx, void * d) {
-  if ( idx >= v->count ) {
+  if ( idx >= v->size ) {
     //don't do anything if they give an invalid index...
     return;
   }
@@ -42,10 +40,11 @@ void cv_insert(cvector * v, size_t idx, void * d) {
 }
 
 void * cv_get(cvector * v, size_t idx) {
-  if ( idx >= v->count ) {
+  if ( idx >= v->size ) {
     //invalid index...
     return NULL;
   }
+  // if NULL is at this location, will return NULL... obviously
   return v->data[idx];
 }
 
