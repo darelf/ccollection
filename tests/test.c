@@ -34,7 +34,7 @@ int main(void) {
   strncpy(buf, "TEST", 4);
   cv_add(v, buf);
   
-  assert( v->size == 30 );
+  assert( v->size == 32 );
   printf("Before removing items (size of %d):\n", v->size);
   int i;
   for ( i = 0; i < v->count; i++) {
@@ -48,7 +48,7 @@ int main(void) {
   cv_remove(v, 5);
   cv_remove(v, 5);
   
-  assert( v->size == 15 );
+  assert( v->size == 16 );
   printf("After removing items (size of %d):\n", v->size);
   for ( i = 0; i < v->count; i++) {
     printf("%s\n", (char *)cv_get(v, i));

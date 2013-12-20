@@ -1,7 +1,7 @@
 #ifndef CVECTOR_H__
 #define CVECTOR_H__
 
-#define CV_DEFAULT_SIZE 15
+#define CV_DEFAULT_SIZE 16
 
 #include <string.h>
 
