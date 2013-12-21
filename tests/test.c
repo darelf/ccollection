@@ -35,7 +35,7 @@ int main(void) {
   cv_add(v, buf);
   
   assert( v->size == 32 );
-  printf("Before removing items (size of %d):\n", v->size);
+  printf("Before removing items (size of %lu):\n", v->size);
   int i;
   for ( i = 0; i < v->count; i++) {
     printf("%s\n", (char *)cv_get(v, i));
@@ -49,7 +49,7 @@ int main(void) {
   cv_remove(v, 5);
   
   assert( v->size == 16 );
-  printf("After removing items (size of %d):\n", v->size);
+  printf("After removing items (size of %lu):\n", v->size);
   for ( i = 0; i < v->count; i++) {
     printf("%s\n", (char *)cv_get(v, i));
   }
