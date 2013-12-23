@@ -7,6 +7,7 @@
 #include <unicode/uchar.h>
 #include <unicode/ustring.h>
 #include <unicode/ustdio.h>
+#include <unicode/uclean.h>
 
 // Compare unicode strings...
 int mycompare(void * a, void * b) {
@@ -30,11 +31,14 @@ int main(void) {
   ch_set(ht, key2, "Say What?");
   
   // A key with an actual unicode character
-  UChar * key3[7];
-  int32_t destLen = 0;
-  UErrorCode * err;
-  u_strFromUTF8(key3, 7, &destLen, "Anυther", strlen("Anυther"), err);
-  
+  UChar * key3 = (UChar *)calloc(8, sizeof(UChar));
+  UErrorCode err = U_ZERO_ERROR;
+  char * buffer = "Anυther";
+  u_printf("%S\n", u_strFromUTF8(key3, 7, NULL, buffer, -1, &err));
+  if (U_FAILURE(err)) {
+    printf("Error: %s\n", u_errorName(err));
+  }
+
   ch_set(ht, key3, "Yet another entry");
   
   assert( strcmp(ch_get(ht, key1), "Mar") == 0 );
@@ -43,6 +47,7 @@ int main(void) {
   u_printf("Showing value for key '%S': %s\n", key2, (char *)ch_get(ht, key2));
   u_printf("Showing value for key '%S': %s\n", key3, (char *)ch_get(ht, key3));
   
+  free(key3);
   ch_free(ht);
   u_cleanup();
   
