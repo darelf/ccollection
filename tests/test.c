@@ -1,7 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include "cvector.h"
 #include "chashtable.h"
+
+// qsort compatible compare function
+int compare(const void * a, const void * b) {
+  return strcmp(*(const char **)a, *(const char **)b);
+}
 
 int main(void) {
   cvector * v = cv_create_default();
@@ -88,7 +94,7 @@ int main(void) {
   printf("Getting the list of keys for the hastable:\n");
   
   cvector * keys = ch_keys(ht);
-  printf("%d\n", keys->count);
+  qsort(keys->data, keys->count, sizeof(char *), compare);
   for ( i = 0; i < keys->count; i++ ) {
     printf("%s\n", (char *)cv_get(keys, i));
   }
