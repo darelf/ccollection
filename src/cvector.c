@@ -19,9 +19,7 @@ void cv_add(cvector * v, void * d) {
   if (v->size == v->count) {
     //You already used the last slot... What do we do now!?!
     v->size = v->size * 2; //Maybe "double the size" a little simplistic?
-    // Note that realloc doesn't initialize the new memory, however,
-    // since we only read up to count items, and items are always compacted
-    // we don't have to worry about those memory locations.
+    
     v->data = realloc(v->data, sizeof(void *) * v->size);
   }
   //Now actually put the data in
