@@ -74,6 +74,27 @@ int main(void) {
   printf("Showing value for key 'John': %s\n", (char *)ch_get(ht, "John"));
   printf("Showing value for key 'Jahn': %s\n", (char *)ch_get(ht, "Jahn"));
   
+  printf("Looking for a key that isn't there...\n");
+  assert( ch_get(ht, "Missing Key") == NULL );
+  
+  // Let's store a number value...
+  double dv = 0;
+  sscanf("123456789.0", "%lf", &dv);
+  ch_set(ht, "Value", &dv);
+  // You have to know what the table is storing...
+  printf("Showing value for key 'Value': %.3lf\n", *(double *)ch_get(ht, "Value"));
+  
+  // Let's get a list of keys...
+  printf("Getting the list of keys for the hastable:\n");
+  
+  cvector * keys = ch_keys(ht);
+  printf("%d\n", keys->count);
+  for ( i = 0; i < keys->count; i++ ) {
+    printf("%s\n", (char *)cv_get(keys, i));
+  }
+  // The caller has to free the vector...
+  cv_free(keys);
+  
   ch_free(ht);
   
   return 0;

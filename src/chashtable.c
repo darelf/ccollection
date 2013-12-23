@@ -32,6 +32,7 @@ hashtable * ch_create_full(size_t num_buckets, hashtable_compare comp) {
   hashtable * h = calloc(1, sizeof(hashtable));
   
   h->buckets = cv_create(num_buckets);
+  h->buckets->count = num_buckets;
   h->size = num_buckets;
   h->hash = jenkins_hash;
   h->compare = comp;
@@ -127,7 +128,18 @@ void * ch_remove(hashtable * h, void * key) {
   return data;
 }
 
-//void * ch_keys(hashtable *h) {
-//  int i;
-//  for (i = 0; i < )
-//}
+// Caller is responsible for freeing the vector
+cvector * ch_keys(hashtable * h) {
+  cvector * keys = cv_create_default();
+  int i, j;
+  for (i = 0; i < h->buckets->count; i++) {
+    cvector * bucket = cv_get(h->buckets, i);
+    if (bucket) {
+      for (j = 0; j < bucket->count; j++) {
+        hashnode * node = cv_get(bucket, j);
+        cv_add(keys, node->key);
+      }
+    }
+  }
+  return keys;
+}

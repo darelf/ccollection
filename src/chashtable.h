@@ -32,6 +32,6 @@ void ch_free(hashtable *);
 void ch_set(hashtable *, void *, void *);
 void * ch_get(hashtable *, void *);
 void * ch_remove(hashtable *, void *);
-void * ch_keys(hashtable *);
+cvector * ch_keys(hashtable *);
 
 #endif
