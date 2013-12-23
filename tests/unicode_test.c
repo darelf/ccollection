@@ -9,6 +9,12 @@
 #include <unicode/ustdio.h>
 #include <unicode/uclean.h>
 
+/*
+ * It may be worth mentioning that the actual hashtable implementation
+ * doesn't really care about the encoding, but if you use Unicode strings
+ * for the keys, then you probably want to use a string compare function
+ * that works with Unicode. This is that example.
+ */
 // Compare unicode strings...
 int mycompare(void * a, void * b) {
   return u_strcmp(a, b);

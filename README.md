@@ -10,7 +10,8 @@ The vector implementation is part mine with some ideas from this gist http://gis
 So again, credit for that inspiration.
 
 I haven't really done a unified header or anything. In the tests directory there is a single
-`test.c` that just tests some basic functions. I've run it against valgrind leak-check and it
+`test.c` that just tests some basic functions, and now a `unicode_test.c` that shows how to
+use your own compare function. I've run it against valgrind leak-check and it
 seems to be happy that no memory is leaking.
 
 I don't really have any good benchmarks or anything. The implementations are very straightforward,
